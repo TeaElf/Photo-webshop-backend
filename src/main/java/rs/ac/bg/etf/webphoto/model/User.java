@@ -4,6 +4,8 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Entity
@@ -29,6 +31,12 @@ public class User {
     private LocalDateTime dateOfCreation;
 
     private String avatar;
+
+    @OneToMany(mappedBy = "user")
+    private List<Photo> photos = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    private List<Invoice> invoices = new ArrayList<>();
 
 
 }

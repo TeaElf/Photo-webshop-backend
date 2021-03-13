@@ -2,7 +2,6 @@ package rs.ac.bg.etf.webphoto.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import rs.ac.bg.etf.webphoto.model.User;
 import rs.ac.bg.etf.webphoto.model.dto.UserRequestDto;
 import rs.ac.bg.etf.webphoto.model.dto.UserResponseDto;
 import rs.ac.bg.etf.webphoto.repository.UserRepository;
