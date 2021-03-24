@@ -32,7 +32,7 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public TagDto findById(Long id) {
-        //add exception
+        //TODO add exception
         return tagMapper.tagToTagDto(tagRepository.findById(id).get());
     }
 
@@ -52,6 +52,7 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public TagDto update(TagDto tagDto) {
+        //TODO add exception
         Tag tag = tagRepository.findById(tagDto.getId()).get();
         tag.setName(tagDto.getName());
         tag.setPhotos(tagDto.getPhotos());
