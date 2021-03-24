@@ -43,6 +43,14 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
+    public List<TagDto> saveAll(List<TagDto> tagDtoList) {
+        List<Tag> tags = tagDtoList.stream().map(tag -> tagMapper.tagDtoToTag(tag)).collect(Collectors.toList());
+        tagRepository.saveAll(tags);
+        List<TagDto> response = tags.stream().map(tag -> tagMapper.tagToTagDto(tag)).collect(Collectors.toList());
+        return response;
+    }
+
+    @Override
     public TagDto update(TagDto tagDto) {
         Tag tag = tagRepository.findById(tagDto.getId()).get();
         tag.setName(tagDto.getName());

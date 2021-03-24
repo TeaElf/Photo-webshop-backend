@@ -11,6 +11,8 @@ import rs.ac.bg.etf.webphoto.model.dto.TagDto;
 import rs.ac.bg.etf.webphoto.repository.TagRepository;
 import rs.ac.bg.etf.webphoto.service.TagService;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/tag")
@@ -32,6 +34,11 @@ public class TagController {
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     public TagDto save(@RequestBody TagDto tagDto) {
         return tagService.save(tagDto);
+    }
+
+    @RequestMapping(value = "/saveAll", method = RequestMethod.POST)
+    public List<TagDto> saveAll(@RequestBody List<TagDto> tagDto) {
+        return tagService.saveAll(tagDto);
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.PUT)
