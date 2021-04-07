@@ -33,8 +33,13 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryDto findById(Long id) {
+        return categoryMapper.categoryToCategoryDto(findOne(id));
+    }
+
+    @Override
+    public Category findOne(Long id) {
         //TODO add exception
-        return categoryMapper.categoryToCategoryDto(categoryRepository.findById(id).get());
+        return categoryRepository.findById(id).get();
     }
 
     @Override
@@ -45,8 +50,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryDto update(CategoryDto categoryDto) {
-        //TODO add exception
-        Category category = categoryRepository.findById(categoryDto.getId()).get();
+        Category category = findOne(categoryDto.getId());
         category.setName(categoryDto.getName());
         category.setPhotos(categoryDto.getPhotos());
         return categoryMapper.categoryToCategoryDto(categoryRepository.save(category));
