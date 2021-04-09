@@ -8,12 +8,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import rs.ac.bg.etf.webphoto.model.Category;
 import rs.ac.bg.etf.webphoto.model.Photo;
+import rs.ac.bg.etf.webphoto.model.Tag;
 import rs.ac.bg.etf.webphoto.model.dto.PhotoRequestDto;
 import rs.ac.bg.etf.webphoto.model.dto.PhotoResponseDto;
 import rs.ac.bg.etf.webphoto.repository.PhotoRepository;
 import rs.ac.bg.etf.webphoto.service.CategoryService;
 import rs.ac.bg.etf.webphoto.service.PhotoDetailsService;
 import rs.ac.bg.etf.webphoto.service.PhotoService;
+import rs.ac.bg.etf.webphoto.service.TagService;
 import rs.ac.bg.etf.webphoto.utils.PhotoMapper;
 
 import java.util.List;
@@ -31,6 +33,8 @@ public class PhotoServiceImpl implements PhotoService {
 
     private final PhotoDetailsService photoDetailsService;
 
+    private final TagService tagService;
+
     @Override
     public Page<PhotoResponseDto> findAll(Predicate predicate, Pageable pageable) {
         Page<Photo> photos = photoRepository.findAll(predicate, pageable);
@@ -47,14 +51,17 @@ public class PhotoServiceImpl implements PhotoService {
     @Override
     public PhotoResponseDto save(PhotoRequestDto photoRequestDto) {
         Photo photo = photoMapper.photoRequestDtoToPhoto(photoRequestDto);
-        // TODO save photo details ?
         // photo details
         photoDetailsService.saveAll(photoRequestDto.getPhotoDetails());
 
         // category
         Category category = categoryService.findOne(photoRequestDto.getCategoryId());
         photo.setCategory(category);
-        // TODO save tags ? search for tags first findOrCreate (prima listu Stringova a vraca listu tagova)
+
+        // tags
+        List<Tag> tags = tagService.findOrCreate(photoRequestDto.getTags());
+        photo.setTags(tags);
+
         return photoMapper.photoToPhotoResponseDto(photoRepository.save(photo));
     }
 

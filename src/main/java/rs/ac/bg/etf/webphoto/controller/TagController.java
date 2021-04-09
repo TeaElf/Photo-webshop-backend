@@ -31,6 +31,11 @@ public class TagController {
         return tagService.findById(id);
     }
 
+    @RequestMapping(value = "/findOrCreate", method = RequestMethod.GET)
+    public List<Tag> findOrCreate(@RequestParam List<String> tags) {
+        return tagService.findOrCreate(tags);
+    }
+
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     public TagDto save(@RequestBody TagDto tagDto) {
         return tagService.save(tagDto);

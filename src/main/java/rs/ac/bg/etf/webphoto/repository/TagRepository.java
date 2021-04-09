@@ -10,7 +10,12 @@ import org.springframework.data.querydsl.binding.SingleValueBinding;
 import rs.ac.bg.etf.webphoto.model.QTag;
 import rs.ac.bg.etf.webphoto.model.Tag;
 
+import java.util.Optional;
+
 public interface TagRepository extends JpaRepository<Tag, Long>, QuerydslPredicateExecutor<Tag>, QuerydslBinderCustomizer<QTag> {
+
+    Tag findByName(String name);
+    boolean existsByName(String name);
 
     @Override
     default void customize(QuerydslBindings bindings, QTag root) {

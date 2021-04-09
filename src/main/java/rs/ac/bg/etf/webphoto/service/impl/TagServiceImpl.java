@@ -37,6 +37,20 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
+    public List<Tag> findOrCreate(List<String> names) {
+        List<Tag> response = names.stream().map(name -> {
+            if (tagRepository.existsByName(name)) {
+                return tagRepository.findByName(name);
+            } else {
+                Tag tag = new Tag();
+                tag.setName(name);
+                return tagRepository.save(tag);
+            }
+        }).collect(Collectors.toList());
+        return response;
+    }
+
+    @Override
     public TagDto save(TagDto tagDto) {
         Tag tag = tagMapper.tagDtoToTag(tagDto);
         return tagMapper.tagToTagDto(tagRepository.save(tag));
