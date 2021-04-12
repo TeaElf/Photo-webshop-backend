@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import rs.ac.bg.etf.webphoto.exceptions.specifications.ResourceNotFoundException;
 import rs.ac.bg.etf.webphoto.model.Category;
 import rs.ac.bg.etf.webphoto.model.dto.CategoryDto;
 import rs.ac.bg.etf.webphoto.repository.CategoryRepository;
@@ -38,8 +39,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Category findOne(Long id) {
-        //TODO add exception
-        return categoryRepository.findById(id).get();
+        return categoryRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
     }
 
     @Override
@@ -52,7 +52,6 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryDto update(CategoryDto categoryDto) {
         Category category = findOne(categoryDto.getId());
         category.setName(categoryDto.getName());
-        category.setPhotos(categoryDto.getPhotos());
         return categoryMapper.categoryToCategoryDto(categoryRepository.save(category));
     }
 }

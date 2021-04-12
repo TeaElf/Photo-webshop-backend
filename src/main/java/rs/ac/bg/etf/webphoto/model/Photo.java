@@ -22,6 +22,8 @@ public class Photo {
     private String description;
 
     private String orientation;
+    // TODO neki flag-count koliko puta kupljena fotografija
+    // TODO da li mozda i date Of creation da bih izvukla najnovije?
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_id", nullable = false)

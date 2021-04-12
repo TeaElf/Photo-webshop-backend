@@ -21,8 +21,10 @@ public class PhotoDetails {
 
     private String path;
 
+//    @ManyToOne(optional = false)
+//    @JoinColumn(name = "photo_id", nullable = false)
     @ManyToOne(optional = false)
-    @JoinColumn(name = "photo_id", nullable = false)
+    @JoinColumn(name = "photo_id")
     private Photo photo;
 
     @OneToMany(mappedBy = "photoDetails")

@@ -15,10 +15,16 @@ public interface PhotoDetailsService {
 
     PhotoDetailsDto findById(Long id);
 
+    PhotoDetails findOne(Long id);
+
     PhotoDetailsDto save(PhotoDetailsDto photoDetailsDto);
 
     List<PhotoDetails> saveAll(List<PhotoDetailsRequestDto> photoDetailsDtos);
 
+    List<PhotoDetails> saveAllDetails(List<PhotoDetails> photoDetails);
+
     PhotoDetailsDto update(PhotoDetailsDto photoDetailsDto);
+
+    List<PhotoDetails> updateAll(List<PhotoDetailsRequestDto> photoDetailsDtos);
 
 }

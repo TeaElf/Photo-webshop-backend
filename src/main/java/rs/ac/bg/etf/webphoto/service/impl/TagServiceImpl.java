@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import rs.ac.bg.etf.webphoto.exceptions.specifications.ResourceNotFoundException;
 import rs.ac.bg.etf.webphoto.model.Tag;
 import rs.ac.bg.etf.webphoto.model.dto.TagDto;
 import rs.ac.bg.etf.webphoto.repository.TagRepository;
@@ -32,8 +33,7 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public TagDto findById(Long id) {
-        //TODO add exception
-        return tagMapper.tagToTagDto(tagRepository.findById(id).get());
+        return tagMapper.tagToTagDto(tagRepository.findById(id).orElseThrow(ResourceNotFoundException::new));
     }
 
     @Override
@@ -66,10 +66,8 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public TagDto update(TagDto tagDto) {
-        //TODO add exception
-        Tag tag = tagRepository.findById(tagDto.getId()).get();
+        Tag tag = tagRepository.findById(tagDto.getId()).orElseThrow(ResourceNotFoundException::new);
         tag.setName(tagDto.getName());
-        tag.setPhotos(tagDto.getPhotos());
         return tagMapper.tagToTagDto(tagRepository.save(tag));
     }
 }

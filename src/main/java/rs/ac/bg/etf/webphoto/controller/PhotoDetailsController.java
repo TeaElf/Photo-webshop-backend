@@ -38,4 +38,7 @@ public class PhotoDetailsController {
     public PhotoDetailsDto update(@RequestBody PhotoDetailsDto photoDetailsDto) {
         return photoDetailsService.update(photoDetailsDto);
     }
+
+    // TODO DELETE
+
 }

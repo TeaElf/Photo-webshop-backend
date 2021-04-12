@@ -17,9 +17,7 @@ public class PhotoResponseDto {
 
     private String orientation;
 
-    private Long userId;
-
-    private Long categoryId;
+    private CategoryDto category;
 
     private List<PhotoDetailsDto> photoDetails;
 

@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import rs.ac.bg.etf.webphoto.exceptions.specifications.ResourceNotFoundException;
 import rs.ac.bg.etf.webphoto.model.User;
 import rs.ac.bg.etf.webphoto.model.dto.UserRequestDto;
 import rs.ac.bg.etf.webphoto.model.dto.UserResponseDto;
@@ -37,15 +38,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponseDto findById(Long id) {
-        // handle exception
-        User user = userRepository.findById(id).get();
-        return userMapper.userToUserResponseDto(user);
+        return userMapper.userToUserResponseDto(findOne(id));
     }
 
     @Override
     public User findOne(Long id) {
-        // handle exception
-        return userRepository.findById(id).get();
+        return userRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
     }
 
     @Override

@@ -6,16 +6,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import rs.ac.bg.etf.webphoto.model.Category;
-import rs.ac.bg.etf.webphoto.model.Photo;
-import rs.ac.bg.etf.webphoto.model.Tag;
+import rs.ac.bg.etf.webphoto.exceptions.specifications.ResourceNotFoundException;
+import rs.ac.bg.etf.webphoto.model.*;
+import rs.ac.bg.etf.webphoto.model.dto.PhotoDetailsDto;
+import rs.ac.bg.etf.webphoto.model.dto.PhotoDetailsRequestDto;
 import rs.ac.bg.etf.webphoto.model.dto.PhotoRequestDto;
 import rs.ac.bg.etf.webphoto.model.dto.PhotoResponseDto;
 import rs.ac.bg.etf.webphoto.repository.PhotoRepository;
-import rs.ac.bg.etf.webphoto.service.CategoryService;
-import rs.ac.bg.etf.webphoto.service.PhotoDetailsService;
-import rs.ac.bg.etf.webphoto.service.PhotoService;
-import rs.ac.bg.etf.webphoto.service.TagService;
+import rs.ac.bg.etf.webphoto.service.*;
+import rs.ac.bg.etf.webphoto.utils.PhotoDetailsMapper;
 import rs.ac.bg.etf.webphoto.utils.PhotoMapper;
 
 import java.util.List;
@@ -35,6 +34,10 @@ public class PhotoServiceImpl implements PhotoService {
 
     private final TagService tagService;
 
+    private final UserService userService;
+
+    private final PhotoDetailsMapper photoDetailsMapper;
+
     @Override
     public Page<PhotoResponseDto> findAll(Predicate predicate, Pageable pageable) {
         Page<Photo> photos = photoRepository.findAll(predicate, pageable);
@@ -44,15 +47,17 @@ public class PhotoServiceImpl implements PhotoService {
 
     @Override
     public PhotoResponseDto findById(Long id) {
-        // TODO add exception
-        return photoMapper.photoToPhotoResponseDto(photoRepository.findById(id).get());
+        return photoMapper.photoToPhotoResponseDto(photoRepository.findById(id).orElseThrow(ResourceNotFoundException::new));
     }
 
     @Override
     public PhotoResponseDto save(PhotoRequestDto photoRequestDto) {
         Photo photo = photoMapper.photoRequestDtoToPhoto(photoRequestDto);
-        // photo details
-        photoDetailsService.saveAll(photoRequestDto.getPhotoDetails());
+        // TODO istestirati nesto nije dobro - problem prilikom cuvanja photo details
+
+        // user  - zameniti sa user id-em iz tokena
+        User user = userService.findOne(photoRequestDto.getUserId());
+        photo.setUser(user);
 
         // category
         Category category = categoryService.findOne(photoRequestDto.getCategoryId());
@@ -62,21 +67,42 @@ public class PhotoServiceImpl implements PhotoService {
         List<Tag> tags = tagService.findOrCreate(photoRequestDto.getTags());
         photo.setTags(tags);
 
-        return photoMapper.photoToPhotoResponseDto(photoRepository.save(photo));
+        Photo response = photoRepository.save(photo);
+        // photo details
+//        List<PhotoDetailsRequestDto> detailsRequestDtos = photoRequestDto.getPhotoDetails();
+////        detailsRequestDtos.forEach(det -> det.setPhotoId(response.getId()));
+//        List<PhotoDetails> details = photoDetailsService.saveAll(detailsRequestDtos);
+
+//        response.setPhotoDetails(details);
+        List<PhotoDetails> pDetails = photoRequestDto.getPhotoDetails().stream().map(pDe -> photoDetailsMapper.photoDetailsRequestDtoToPhotoDetails(pDe)).collect(Collectors.toList());
+        for (PhotoDetails de: pDetails) {
+            de.setPhoto(photo);
+        }
+        List<PhotoDetails> details = photoDetailsService.saveAllDetails(pDetails);
+        response.setPhotoDetails(details);
+
+        return photoMapper.photoToPhotoResponseDto(response);
     }
 
     @Override
     public PhotoResponseDto update(PhotoRequestDto photoRequestDto) {
-        // TODO add exception
-        Photo photo = photoRepository.findById(photoRequestDto.getId()).get();
+        Photo photo = photoRepository.findById(photoRequestDto.getId()).orElseThrow(ResourceNotFoundException::new);
         photo.setTitle(photoRequestDto.getTitle());
         photo.setDescription(photoRequestDto.getDescription());
         photo.setOrientation(photoRequestDto.getOrientation());
         photo.setPath(photoRequestDto.getPath());
-        // cekiraj promenu kategorije? da li uopste moze to?
-        // pronadji i dodaj photo.setCategory();
-        // tagovi ? photo.setTags(photoRequestDto.get);
-        // da li menjamo kroz ovo photo detalje? meni se cini ne ; photo.setPhotoDetails();
+        if (photoRequestDto.getCategoryId()!=null) {
+            Category category = categoryService.findOne(photoRequestDto.getCategoryId());
+            photo.setCategory(category);
+        }
+        if (!photoRequestDto.getTags().isEmpty()) {
+            List<Tag> tags = tagService.findOrCreate(photoRequestDto.getTags());
+            photo.setTags(tags);
+        }
+        // da li menjamo kroz ovo photo detalje? photo.setPhotoDetails();
+        List<PhotoDetails> photoDetails = photoDetailsService.updateAll(photoRequestDto.getPhotoDetails());
+        photo.setPhotoDetails(photoDetails);
+
         return photoMapper.photoToPhotoResponseDto(photoRepository.save(photo));
     }
 }

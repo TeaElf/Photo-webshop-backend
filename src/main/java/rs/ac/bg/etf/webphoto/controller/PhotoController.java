@@ -40,4 +40,6 @@ public class PhotoController {
         return photoService.update(photoRequestDto);
     }
 
+    // TODO DELETE
+
 }
