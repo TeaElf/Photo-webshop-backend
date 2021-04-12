@@ -7,6 +7,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import rs.ac.bg.etf.webphoto.exceptions.specifications.ResourceNotFoundException;
+import rs.ac.bg.etf.webphoto.model.Photo;
 import rs.ac.bg.etf.webphoto.model.PhotoDetails;
 import rs.ac.bg.etf.webphoto.model.dto.PhotoDetailsDto;
 import rs.ac.bg.etf.webphoto.model.dto.PhotoDetailsRequestDto;
@@ -50,21 +51,12 @@ public class PhotoDetailsServiceImpl implements PhotoDetailsService {
     }
 
     @Override
-    public List<PhotoDetails> saveAll(List<PhotoDetailsRequestDto> photoDetailsDtos) {
-//        List<PhotoDetailsDto> details = photoDetailsDtos.stream().map(pd -> save(pd)).collect(Collectors.toList());
-        List<PhotoDetails> details = photoDetailsDtos.stream().map(pd -> {
-            PhotoDetails details1 = photoDetailsMapper.photoDetailsRequestDtoToPhotoDetails(pd);
-
-            return photoDetailsRepository.save(details1);
-        })
-                .collect(Collectors.toList());
-//        return details.stream().map(d-> photoDetailsMapper.photoDetailsDtoToPhotoDetails(d)).collect(Collectors.toList());
-        return details;
-    }
-
-    @Override
-    public List<PhotoDetails> saveAllDetails(List<PhotoDetails> photoDetails) {
-        return photoDetails.stream().map(pd -> photoDetailsRepository.save(pd)).collect(Collectors.toList());
+    public List<PhotoDetails> saveAll(List<PhotoDetailsRequestDto> photoDetailsRequestDtos, Photo photo) {
+        List<PhotoDetails> pDetails = photoDetailsRequestDtos.stream().map(pDe -> photoDetailsMapper.photoDetailsRequestDtoToPhotoDetails(pDe)).collect(Collectors.toList());
+        for (PhotoDetails de: pDetails) {
+            de.setPhoto(photo);
+        }
+        return pDetails.stream().map(pd -> photoDetailsRepository.save(pd)).collect(Collectors.toList());
     }
 
     @Override

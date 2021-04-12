@@ -3,6 +3,7 @@ package rs.ac.bg.etf.webphoto.service;
 import com.querydsl.core.types.Predicate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import rs.ac.bg.etf.webphoto.model.Photo;
 import rs.ac.bg.etf.webphoto.model.PhotoDetails;
 import rs.ac.bg.etf.webphoto.model.dto.PhotoDetailsDto;
 import rs.ac.bg.etf.webphoto.model.dto.PhotoDetailsRequestDto;
@@ -19,9 +20,7 @@ public interface PhotoDetailsService {
 
     PhotoDetailsDto save(PhotoDetailsDto photoDetailsDto);
 
-    List<PhotoDetails> saveAll(List<PhotoDetailsRequestDto> photoDetailsDtos);
-
-    List<PhotoDetails> saveAllDetails(List<PhotoDetails> photoDetails);
+    List<PhotoDetails> saveAll(List<PhotoDetailsRequestDto> photoDetailsRequestDtos, Photo photo);
 
     PhotoDetailsDto update(PhotoDetailsDto photoDetailsDto);
 

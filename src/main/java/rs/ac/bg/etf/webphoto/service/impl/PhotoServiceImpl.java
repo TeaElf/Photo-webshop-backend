@@ -8,13 +8,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import rs.ac.bg.etf.webphoto.exceptions.specifications.ResourceNotFoundException;
 import rs.ac.bg.etf.webphoto.model.*;
-import rs.ac.bg.etf.webphoto.model.dto.PhotoDetailsDto;
-import rs.ac.bg.etf.webphoto.model.dto.PhotoDetailsRequestDto;
 import rs.ac.bg.etf.webphoto.model.dto.PhotoRequestDto;
 import rs.ac.bg.etf.webphoto.model.dto.PhotoResponseDto;
 import rs.ac.bg.etf.webphoto.repository.PhotoRepository;
 import rs.ac.bg.etf.webphoto.service.*;
-import rs.ac.bg.etf.webphoto.utils.PhotoDetailsMapper;
 import rs.ac.bg.etf.webphoto.utils.PhotoMapper;
 
 import java.util.List;
@@ -36,8 +33,6 @@ public class PhotoServiceImpl implements PhotoService {
 
     private final UserService userService;
 
-    private final PhotoDetailsMapper photoDetailsMapper;
-
     @Override
     public Page<PhotoResponseDto> findAll(Predicate predicate, Pageable pageable) {
         Page<Photo> photos = photoRepository.findAll(predicate, pageable);
@@ -53,7 +48,6 @@ public class PhotoServiceImpl implements PhotoService {
     @Override
     public PhotoResponseDto save(PhotoRequestDto photoRequestDto) {
         Photo photo = photoMapper.photoRequestDtoToPhoto(photoRequestDto);
-        // TODO istestirati nesto nije dobro - problem prilikom cuvanja photo details
 
         // user  - zameniti sa user id-em iz tokena
         User user = userService.findOne(photoRequestDto.getUserId());
@@ -68,17 +62,9 @@ public class PhotoServiceImpl implements PhotoService {
         photo.setTags(tags);
 
         Photo response = photoRepository.save(photo);
-        // photo details
-//        List<PhotoDetailsRequestDto> detailsRequestDtos = photoRequestDto.getPhotoDetails();
-////        detailsRequestDtos.forEach(det -> det.setPhotoId(response.getId()));
-//        List<PhotoDetails> details = photoDetailsService.saveAll(detailsRequestDtos);
 
-//        response.setPhotoDetails(details);
-        List<PhotoDetails> pDetails = photoRequestDto.getPhotoDetails().stream().map(pDe -> photoDetailsMapper.photoDetailsRequestDtoToPhotoDetails(pDe)).collect(Collectors.toList());
-        for (PhotoDetails de: pDetails) {
-            de.setPhoto(photo);
-        }
-        List<PhotoDetails> details = photoDetailsService.saveAllDetails(pDetails);
+        // photo details
+        List<PhotoDetails> details = photoDetailsService.saveAll(photoRequestDto.getPhotoDetails(), photo);
         response.setPhotoDetails(details);
 
         return photoMapper.photoToPhotoResponseDto(response);
