@@ -39,6 +39,14 @@ public class PhotoDetailsController {
         return photoDetailsService.update(photoDetailsDto);
     }
 
-    // TODO DELETE
+    @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
+    public boolean delete(@RequestParam Long id){
+        return photoDetailsService.delete(id);
+    }
+
+    @RequestMapping(value = "/deleteAll", method = RequestMethod.DELETE)
+    public boolean deleteAll(@RequestParam Long photoId){
+        return photoDetailsService.deleteAll(photoId);
+    }
 
 }

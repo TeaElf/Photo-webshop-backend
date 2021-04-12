@@ -40,6 +40,9 @@ public class PhotoController {
         return photoService.update(photoRequestDto);
     }
 
-    // TODO DELETE
+    @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
+    public boolean delete(@RequestParam Long id){
+        return photoService.delete(id);
+    }
 
 }

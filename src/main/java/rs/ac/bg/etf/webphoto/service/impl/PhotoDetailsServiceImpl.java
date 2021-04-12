@@ -80,4 +80,19 @@ public class PhotoDetailsServiceImpl implements PhotoDetailsService {
         }
         return photoDetailsRepository.saveAll(details);
     }
+
+    @Override
+    public boolean delete(Long id) {
+        if(photoDetailsRepository.existsById(id))
+            photoDetailsRepository.deleteById(id);
+        return true;
+    }
+
+    @Override
+    public boolean deleteAll(Long photoId) {
+        List<PhotoDetails> photoDetails = photoDetailsRepository.findByPhoto_Id(photoId);
+        if(!photoDetails.isEmpty())
+            photoDetailsRepository.deleteAll(photoDetails);
+        return true;
+    }
 }

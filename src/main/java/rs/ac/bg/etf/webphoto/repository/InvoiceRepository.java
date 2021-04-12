@@ -14,7 +14,7 @@ import java.util.Optional;
 
 public interface InvoiceRepository extends JpaRepository<Invoice, Long>, QuerydslPredicateExecutor<Invoice>, QuerydslBinderCustomizer<QInvoice> {
 
-    Optional<Invoice> findByUser_Id(Long id);
+    Optional<Invoice> findByUser_Id(Long userId);
 
     @Override
     default void customize(QuerydslBindings bindings, QInvoice root) {

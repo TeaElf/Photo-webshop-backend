@@ -3,6 +3,7 @@ package rs.ac.bg.etf.webphoto.model;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,8 +23,12 @@ public class Photo {
     private String description;
 
     private String orientation;
-    // TODO neki flag-count koliko puta kupljena fotografija
-    // TODO da li mozda i date Of creation da bih izvukla najnovije?
+
+    // count koliko puta nesto kupljeno
+    private Long timesBought = 0L;
+
+    // za home page da bi se izvuklo koje su najnovije fotke
+    private LocalDateTime dateOfCreation;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_id", nullable = false)

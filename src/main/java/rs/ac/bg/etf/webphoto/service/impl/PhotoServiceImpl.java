@@ -14,6 +14,7 @@ import rs.ac.bg.etf.webphoto.repository.PhotoRepository;
 import rs.ac.bg.etf.webphoto.service.*;
 import rs.ac.bg.etf.webphoto.utils.PhotoMapper;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,6 +49,7 @@ public class PhotoServiceImpl implements PhotoService {
     @Override
     public PhotoResponseDto save(PhotoRequestDto photoRequestDto) {
         Photo photo = photoMapper.photoRequestDtoToPhoto(photoRequestDto);
+        photo.setDateOfCreation(LocalDateTime.now());
 
         // user  - zameniti sa user id-em iz tokena
         User user = userService.findOne(photoRequestDto.getUserId());
@@ -90,5 +92,15 @@ public class PhotoServiceImpl implements PhotoService {
         photo.setPhotoDetails(photoDetails);
 
         return photoMapper.photoToPhotoResponseDto(photoRepository.save(photo));
+    }
+
+    @Override
+    public boolean delete(Long id) {
+        if(photoRepository.existsById(id)) {
+            //proveri da li ima rezolucija pa njih pobrisati sve pa onda fotku
+            photoDetailsService.deleteAll(id);
+            photoRepository.deleteById(id);
+        }
+        return true;
     }
 }

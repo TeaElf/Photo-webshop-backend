@@ -26,4 +26,8 @@ public interface PhotoDetailsService {
 
     List<PhotoDetails> updateAll(List<PhotoDetailsRequestDto> photoDetailsDtos);
 
+    boolean delete(Long id);
+
+    boolean deleteAll(Long photoId);
+
 }

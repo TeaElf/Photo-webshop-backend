@@ -10,7 +10,11 @@ import org.springframework.data.querydsl.binding.SingleValueBinding;
 import rs.ac.bg.etf.webphoto.model.PhotoDetails;
 import rs.ac.bg.etf.webphoto.model.QPhotoDetails;
 
+import java.util.List;
+
 public interface PhotoDetailsRepository extends JpaRepository<PhotoDetails, Long>, QuerydslPredicateExecutor<PhotoDetails>, QuerydslBinderCustomizer<QPhotoDetails> {
+
+    List<PhotoDetails> findByPhoto_Id(Long photoId);
 
     @Override
     default void customize(QuerydslBindings bindings, QPhotoDetails root) {
