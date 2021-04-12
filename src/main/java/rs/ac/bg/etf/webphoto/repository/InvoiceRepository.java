@@ -10,7 +10,11 @@ import org.springframework.data.querydsl.binding.SingleValueBinding;
 import rs.ac.bg.etf.webphoto.model.Invoice;
 import rs.ac.bg.etf.webphoto.model.QInvoice;
 
+import java.util.Optional;
+
 public interface InvoiceRepository extends JpaRepository<Invoice, Long>, QuerydslPredicateExecutor<Invoice>, QuerydslBinderCustomizer<QInvoice> {
+
+    Optional<Invoice> findByUser_Id(Long id);
 
     @Override
     default void customize(QuerydslBindings bindings, QInvoice root) {
