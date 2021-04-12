@@ -16,6 +16,7 @@ import rs.ac.bg.etf.webphoto.service.PhotoDetailsService;
 import rs.ac.bg.etf.webphoto.utils.PhotoDetailsMapper;
 
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -52,6 +53,7 @@ public class PhotoDetailsServiceImpl implements PhotoDetailsService {
 
     @Override
     public List<PhotoDetails> saveAll(List<PhotoDetailsRequestDto> photoDetailsRequestDtos, Photo photo) {
+        // encodedValue - byte[] imageBytes = Base64.getDecoder().decode(imageRequestDto.getData());
         List<PhotoDetails> pDetails = photoDetailsRequestDtos.stream().map(pDe -> photoDetailsMapper.photoDetailsRequestDtoToPhotoDetails(pDe)).collect(Collectors.toList());
         for (PhotoDetails de: pDetails) {
             de.setPhoto(photo);
@@ -70,14 +72,25 @@ public class PhotoDetailsServiceImpl implements PhotoDetailsService {
     }
 
     @Override
-    public List<PhotoDetails> updateAll(List<PhotoDetailsRequestDto> photoDetailsDtos) {
+    public List<PhotoDetails> updateAll(List<PhotoDetailsRequestDto> photoDetailsDtos, Long photoId) {
         List<PhotoDetails> details = new ArrayList<>();
+
+//        List<PhotoDetailsRequestDto> newDetails = photoDetailsDtos.stream().filter(newD -> newD.getId()==null).collect(Collectors.toList());
+
         for (PhotoDetailsRequestDto pd: photoDetailsDtos) {
             PhotoDetails photoDetails = findOne(pd.getId());
             photoDetails.setSize(pd.getSize());
             photoDetails.setPrice(pd.getPrice());
             details.add(photoDetails);
         }
+        // TODO obraditi ako neko obrise rezoluciju koju vise ne zeli, a doda neku novu ?
+        // if(pd.getId() == null)
+        // ili razmisliti jpql delete pd from PhotoDetails pd where pd.photo.id = :photoId and pd.id not in :listIds
+        List<PhotoDetails> oldDetails = photoDetailsRepository.findByPhoto_Id(photoId);
+        List<PhotoDetails> removedDetails = oldDetails.stream()
+                .filter(objectDetails -> !details.contains(objectDetails)).collect(Collectors.toList());
+        photoDetailsRepository.deleteAll(removedDetails);
+
         return photoDetailsRepository.saveAll(details);
     }
 
