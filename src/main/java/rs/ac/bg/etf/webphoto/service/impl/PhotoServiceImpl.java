@@ -88,7 +88,9 @@ public class PhotoServiceImpl implements PhotoService {
             photo.setTags(tags);
         }
         // da li menjamo kroz ovo photo detalje? photo.setPhotoDetails();
-        List<PhotoDetails> photoDetails = photoDetailsService.updateAll(photoRequestDto.getPhotoDetails(), photo.getId());
+//        List<PhotoDetails> photoDetails = photoDetailsService.updateAll(photoRequestDto.getPhotoDetails(), photo.getId());
+        List<PhotoDetails> photoDetails = photoDetailsService.updateAll(photoRequestDto.getPhotoDetails(), photo);
+
         photo.setPhotoDetails(photoDetails);
 
         return photoMapper.photoToPhotoResponseDto(photoRepository.save(photo));

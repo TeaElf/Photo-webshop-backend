@@ -24,7 +24,7 @@ public interface PhotoDetailsService {
 
     PhotoDetailsDto update(PhotoDetailsDto photoDetailsDto);
 
-    List<PhotoDetails> updateAll(List<PhotoDetailsRequestDto> photoDetailsDtos, Long photoId);
+    List<PhotoDetails> updateAll(List<PhotoDetailsRequestDto> photoDetailsDtos, Photo photo);
 
     boolean delete(Long id);
 

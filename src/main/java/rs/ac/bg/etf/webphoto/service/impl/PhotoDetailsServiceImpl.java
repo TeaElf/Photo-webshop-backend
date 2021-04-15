@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import rs.ac.bg.etf.webphoto.exceptions.specifications.ResourceNotFoundException;
 import rs.ac.bg.etf.webphoto.model.Photo;
 import rs.ac.bg.etf.webphoto.model.PhotoDetails;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -53,7 +55,7 @@ public class PhotoDetailsServiceImpl implements PhotoDetailsService {
 
     @Override
     public List<PhotoDetails> saveAll(List<PhotoDetailsRequestDto> photoDetailsRequestDtos, Photo photo) {
-        // encodedValue - byte[] imageBytes = Base64.getDecoder().decode(imageRequestDto.getData());
+        // TODO encodedValue - byte[] imageBytes = Base64.getDecoder().decode(imageRequestDto.getData());
         List<PhotoDetails> pDetails = photoDetailsRequestDtos.stream().map(pDe -> photoDetailsMapper.photoDetailsRequestDtoToPhotoDetails(pDe)).collect(Collectors.toList());
         for (PhotoDetails de: pDetails) {
             de.setPhoto(photo);
@@ -72,26 +74,35 @@ public class PhotoDetailsServiceImpl implements PhotoDetailsService {
     }
 
     @Override
-    public List<PhotoDetails> updateAll(List<PhotoDetailsRequestDto> photoDetailsDtos, Long photoId) {
+    @Transactional
+    public List<PhotoDetails> updateAll(List<PhotoDetailsRequestDto> photoDetailsDtos, Photo photo) {
         List<PhotoDetails> details = new ArrayList<>();
 
-//        List<PhotoDetailsRequestDto> newDetails = photoDetailsDtos.stream().filter(newD -> newD.getId()==null).collect(Collectors.toList());
-
+        List<PhotoDetails> newDetails = new ArrayList<>();
         for (PhotoDetailsRequestDto pd: photoDetailsDtos) {
-            PhotoDetails photoDetails = findOne(pd.getId());
-            photoDetails.setSize(pd.getSize());
-            photoDetails.setPrice(pd.getPrice());
-            details.add(photoDetails);
+            if(pd.getId() == null) {
+                PhotoDetails photoDetails = new PhotoDetails();
+                photoDetails.setSize(pd.getSize());
+                photoDetails.setPrice(pd.getPrice());
+                photoDetails.setPhoto(photo);
+                newDetails.add(photoDetails);
+            }
+            else {
+                PhotoDetails photoDetails = findOne(pd.getId());
+                photoDetails.setSize(pd.getSize());
+                photoDetails.setPrice(pd.getPrice());
+                details.add(photoDetails);
+            }
         }
-        // TODO obraditi ako neko obrise rezoluciju koju vise ne zeli, a doda neku novu ?
-        // if(pd.getId() == null)
         // ili razmisliti jpql delete pd from PhotoDetails pd where pd.photo.id = :photoId and pd.id not in :listIds
-        List<PhotoDetails> oldDetails = photoDetailsRepository.findByPhoto_Id(photoId);
-        List<PhotoDetails> removedDetails = oldDetails.stream()
-                .filter(objectDetails -> !details.contains(objectDetails)).collect(Collectors.toList());
-        photoDetailsRepository.deleteAll(removedDetails);
+        List<PhotoDetails> oldDetails = photoDetailsRepository.findByPhoto_Id(photo.getId());
+        List<Long> oldDetailsIds = oldDetails.stream().map(PhotoDetails::getId).collect(Collectors.toList());
+        List<Long> detailsIds = details.stream().map(PhotoDetails::getId).collect(Collectors.toList());
+        List<Long> removedDetailsIds = oldDetailsIds.stream().filter(od -> !detailsIds.contains(od)).collect(Collectors.toList());
 
-        return photoDetailsRepository.saveAll(details);
+        photoDetailsRepository.deleteByIdIn(removedDetailsIds);
+        List<PhotoDetails> combinedRequestDetails = Stream.concat(details.stream(), newDetails.stream()).collect(Collectors.toList());
+        return photoDetailsRepository.saveAll(combinedRequestDetails);
     }
 
     @Override
