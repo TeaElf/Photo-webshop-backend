@@ -10,7 +10,11 @@ import org.springframework.data.querydsl.binding.SingleValueBinding;
 import rs.ac.bg.etf.webphoto.model.QUser;
 import rs.ac.bg.etf.webphoto.model.User;
 
+import java.util.Optional;
+
 public interface UserRepository extends JpaRepository<User, Long>, QuerydslPredicateExecutor<User>, QuerydslBinderCustomizer<QUser> {
+
+    Optional<User> findByUsername(String username);
 
     @Override
     default void customize(QuerydslBindings bindings, QUser root) {
