@@ -8,11 +8,21 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import rs.ac.bg.etf.webphoto.exceptions.specifications.ResourceNotFoundException;
 import rs.ac.bg.etf.webphoto.model.Invoice;
+import rs.ac.bg.etf.webphoto.model.InvoiceItem;
+import rs.ac.bg.etf.webphoto.model.User;
+import rs.ac.bg.etf.webphoto.model.dto.CartItemDto;
 import rs.ac.bg.etf.webphoto.model.dto.InvoiceDto;
+import rs.ac.bg.etf.webphoto.model.enums.InvoiceStatus;
+import rs.ac.bg.etf.webphoto.repository.InvoiceItemRepository;
 import rs.ac.bg.etf.webphoto.repository.InvoiceRepository;
 import rs.ac.bg.etf.webphoto.service.InvoiceService;
+import rs.ac.bg.etf.webphoto.service.PhotoDetailsService;
+import rs.ac.bg.etf.webphoto.service.UserService;
 import rs.ac.bg.etf.webphoto.utils.InvoiceMapper;
 
+import java.security.Principal;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,9 +30,17 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class InvoiceServiceImpl implements InvoiceService {
 
-    public final InvoiceRepository invoiceRepository;
+    private final Double TAX_VALUE = 0.2;
 
-    public final InvoiceMapper invoiceMapper;
+    private final UserService userService;
+
+    private final InvoiceMapper invoiceMapper;
+
+    private final InvoiceRepository invoiceRepository;
+
+    private final PhotoDetailsService photoDetailsService;
+
+    private final InvoiceItemRepository invoiceItemRepository;
 
     @Override
     public Page<InvoiceDto> findAll(Predicate predicate, Pageable pageable) {
@@ -34,5 +52,48 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Override
     public InvoiceDto findByUserId(Long userId) {
         return invoiceMapper.invoiceToInvoiceDto(invoiceRepository.findByUser_Id(userId).orElseThrow(ResourceNotFoundException::new));
+    }
+
+    @Override
+    public Invoice findByOrderId(String orderId) {
+        return invoiceRepository.findByOrderId(orderId).orElseThrow();
+    }
+
+    @Override
+    public Invoice createInvoice(List<CartItemDto> items, Principal principal) {
+        Invoice invoice = new Invoice();
+        User user = userService.findByUsername(principal.getName());
+        invoice.setUser(user);
+        invoice.setDateOfCreation(LocalDateTime.now());
+        invoice.setStatus(InvoiceStatus.IN_PROGRESS);
+        invoiceRepository.save(invoice);
+
+        double amount = 0;
+        List<InvoiceItem> invoiceItems = new ArrayList<>();
+        for (CartItemDto cartItem : items) {
+            InvoiceItem item = new InvoiceItem();
+            var photo = photoDetailsService.findOne(cartItem.getPhotoDetailsId());
+            item.setInvoice(invoice);
+            item.setPhotoDetails(photo);
+            item.setPrice(photo.getPrice());
+            amount += photo.getPrice();
+            invoiceItems.add(item);
+        }
+
+        invoiceItemRepository.saveAll(invoiceItems);
+
+        double taxValue = amount * TAX_VALUE;
+        double amountWithoutTax = amount - taxValue;
+        invoice.setTax(taxValue);
+        invoice.setAmount(amountWithoutTax);
+        invoiceRepository.save(invoice);
+
+        invoice.setInvoiceItems(invoiceItems);
+        return invoice;
+    }
+
+    @Override
+    public void update(Invoice invoice) {
+        invoiceRepository.save(invoice);
     }
 }
