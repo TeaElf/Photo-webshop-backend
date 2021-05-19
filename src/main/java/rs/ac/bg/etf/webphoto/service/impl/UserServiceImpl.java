@@ -47,6 +47,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username).orElseThrow();
+    }
+
+    @Override
     public UserResponseDto save(UserRequestDto userRequestDto) {
         User user = userMapper.userRequestToUser(userRequestDto);
         user.setDateOfCreation(LocalDateTime.now());
