@@ -1,6 +1,7 @@
 package rs.ac.bg.etf.webphoto.model;
 
 import lombok.Data;
+import rs.ac.bg.etf.webphoto.model.enums.InvoiceStatus;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -17,9 +18,16 @@ public class Invoice {
     private Long id;
 
     //change to enum
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private InvoiceStatus status;
 
     private LocalDateTime dateOfCreation;
+
+    private String orderId;
+
+    private Double amount;
+
+    private Double tax;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

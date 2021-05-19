@@ -16,6 +16,8 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Long>, Queryds
 
     Optional<Invoice> findByUser_Id(Long userId);
 
+    Optional<Invoice> findByOrderId(String orderId);
+
     @Override
     default void customize(QuerydslBindings bindings, QInvoice root) {
         bindings.bind(String.class)
