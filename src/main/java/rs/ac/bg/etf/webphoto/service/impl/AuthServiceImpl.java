@@ -3,6 +3,8 @@ package rs.ac.bg.etf.webphoto.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import rs.ac.bg.etf.webphoto.model.dto.LoginRequestDto;
 import rs.ac.bg.etf.webphoto.service.AuthService;
@@ -15,6 +17,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void login(LoginRequestDto loginRequest) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 }

@@ -13,29 +13,30 @@ import rs.ac.bg.etf.webphoto.service.CategoryService;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/category")
+@RequestMapping(value = "/categories")
 public class CategoryController {
 
     private final CategoryService categoryService;
 
-    @RequestMapping(value = "/findAll", method = RequestMethod.GET)
+    @GetMapping
     public Page<CategoryDto> findAll(@QuerydslPredicate(root = Category.class, bindings = CategoryRepository.class) Predicate predicate,
                                      Pageable pageable) {
         return categoryService.findAll(predicate, pageable);
     }
 
-    @RequestMapping(value = "/findById", method = RequestMethod.GET)
-    public CategoryDto findById(@RequestParam Long id) {
+    @GetMapping("/{id}")
+    public CategoryDto findById(@PathVariable Long id) {
         return categoryService.findById(id);
     }
 
-    @RequestMapping(value = "/save", method = RequestMethod.POST)
+    @PostMapping
     public CategoryDto save(@RequestBody CategoryDto categoryDto) {
         return categoryService.save(categoryDto);
     }
 
-    @RequestMapping(value = "/update", method = RequestMethod.PUT)
-    public CategoryDto update(@RequestBody CategoryDto categoryDto) {
-        return categoryService.update(categoryDto);
+//    @RequestMapping(value = "/update", method = RequestMethod.PUT)
+    @PutMapping("/{id}")
+    public CategoryDto update(@PathVariable Long id, @RequestBody CategoryDto categoryDto) {
+        return categoryService.update(id, categoryDto);
     }
 }

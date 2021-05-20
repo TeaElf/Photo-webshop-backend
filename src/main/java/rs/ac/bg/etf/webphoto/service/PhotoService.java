@@ -14,7 +14,7 @@ public interface PhotoService {
 
     PhotoResponseDto save(PhotoRequestDto photoRequestDto);
 
-    PhotoResponseDto update(PhotoRequestDto photoRequestDto);
+    PhotoResponseDto update(Long id, PhotoRequestDto photoRequestDto);
 
     boolean delete(Long id);
 }

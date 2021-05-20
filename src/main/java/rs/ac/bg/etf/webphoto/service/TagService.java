@@ -20,5 +20,5 @@ public interface TagService {
 
     List<TagDto> saveAll(List<TagDto> tagDtoList);
 
-    TagDto update(TagDto tagDto);
+    TagDto update(Long id, TagDto tagDto);
 }

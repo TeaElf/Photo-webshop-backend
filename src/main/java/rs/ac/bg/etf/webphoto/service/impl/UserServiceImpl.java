@@ -61,8 +61,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponseDto update(UserRequestDto userRequestDto) {
-        User user = findOne(userRequestDto.getId());
+    public UserResponseDto update(Long id, UserRequestDto userRequestDto) {
+        User user = findOne(id);
         user.setAvatar(userRequestDto.getAvatar());
         user.setName(userRequestDto.getName());
         user.setSurname(userRequestDto.getSurname());

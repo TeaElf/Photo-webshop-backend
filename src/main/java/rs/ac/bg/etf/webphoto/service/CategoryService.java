@@ -17,6 +17,6 @@ public interface CategoryService {
 
     CategoryDto save(CategoryDto categoryDto);
 
-    CategoryDto update(CategoryDto categoryDto);
+    CategoryDto update(Long id, CategoryDto categoryDto);
 
 }

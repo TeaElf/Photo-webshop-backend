@@ -18,34 +18,34 @@ public class PhotoDetailsController {
 
     private final PhotoDetailsService photoDetailsService;
 
-    @RequestMapping(value = "/findAll", method = RequestMethod.GET)
+    @GetMapping
     public Page<PhotoDetailsDto> findAll(@QuerydslPredicate(root = PhotoDetails.class, bindings = PhotoDetailsRepository.class) Predicate predicate,
                                          Pageable pageable) {
         return photoDetailsService.findAll(predicate, pageable);
     }
 
-    @RequestMapping(value = "/findById", method = RequestMethod.GET)
-    public PhotoDetailsDto findById(@RequestParam Long id) {
+    @GetMapping("/{id}")
+    public PhotoDetailsDto findById(@PathVariable Long id) {
         return photoDetailsService.findById(id);
     }
 
-    @RequestMapping(value = "/save", method = RequestMethod.POST)
+    @PostMapping
     public PhotoDetailsDto save(@RequestBody PhotoDetailsDto photoDetailsDto) {
         return photoDetailsService.save(photoDetailsDto);
     }
 
-    @RequestMapping(value = "/update", method = RequestMethod.PUT)
-    public PhotoDetailsDto update(@RequestBody PhotoDetailsDto photoDetailsDto) {
-        return photoDetailsService.update(photoDetailsDto);
+    @PutMapping("/{id}")
+    public PhotoDetailsDto update(@PathVariable Long id, @RequestBody PhotoDetailsDto photoDetailsDto) {
+        return photoDetailsService.update(id, photoDetailsDto);
     }
 
-    @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
-    public boolean delete(@RequestParam Long id){
+    @DeleteMapping("/{id}")
+    public boolean delete(@PathVariable Long id){
         return photoDetailsService.delete(id);
     }
 
-    @RequestMapping(value = "/deleteAll", method = RequestMethod.DELETE)
-    public boolean deleteAll(@RequestParam Long photoId){
+    @DeleteMapping("/{photoId}")
+    public boolean deleteAll(@PathVariable Long photoId){
         return photoDetailsService.deleteAll(photoId);
     }
 

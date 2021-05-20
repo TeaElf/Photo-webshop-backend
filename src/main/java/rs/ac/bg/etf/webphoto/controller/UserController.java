@@ -15,30 +15,30 @@ import rs.ac.bg.etf.webphoto.service.UserService;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/user")
+@RequestMapping(value = "/users")
 public class UserController {
 
     private final UserService userService;
 
-    @RequestMapping(value = "/findAll", method = RequestMethod.GET)
+    @GetMapping
     public Page<UserResponseDto> findAll(@QuerydslPredicate(root = User.class, bindings = UserRepository.class) Predicate predicate,
                                          Pageable pageable){
         return userService.findAll(predicate, pageable);
     }
 
-    @RequestMapping(value = "/findById", method = RequestMethod.GET)
-    public UserResponseDto findById(@RequestParam Long id){
+    @GetMapping("/{id}")
+    public UserResponseDto findById(@PathVariable Long id){
         return userService.findById(id);
     }
 
-    @RequestMapping(value = "/save", method = RequestMethod.POST)
+    @PostMapping
     public UserResponseDto save(@RequestBody UserRequestDto userRequestDto){
         return userService.save(userRequestDto);
     }
 
-    @RequestMapping(value = "/update", method = RequestMethod.PUT)
-    public UserResponseDto update(@RequestBody UserRequestDto userRequestDto){
-        return userService.update(userRequestDto);
+    @PutMapping("/{id}")
+    public UserResponseDto update(@PathVariable Long id, @RequestBody UserRequestDto userRequestDto){
+        return userService.update(id, userRequestDto);
     }
 
 }

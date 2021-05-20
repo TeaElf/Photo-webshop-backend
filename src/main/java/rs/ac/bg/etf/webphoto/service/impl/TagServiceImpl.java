@@ -65,8 +65,8 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public TagDto update(TagDto tagDto) {
-        Tag tag = tagRepository.findById(tagDto.getId()).orElseThrow(ResourceNotFoundException::new);
+    public TagDto update(Long id, TagDto tagDto) {
+        Tag tag = tagRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
         tag.setName(tagDto.getName());
         return tagMapper.tagToTagDto(tagRepository.save(tag));
     }

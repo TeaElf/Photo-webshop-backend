@@ -14,34 +14,34 @@ import rs.ac.bg.etf.webphoto.service.PhotoService;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/photo")
+@RequestMapping(value = "/photos")
 public class PhotoController {
 
     private final PhotoService photoService;
 
-    @RequestMapping(value = "/findAll", method = RequestMethod.GET)
+    @GetMapping
     public Page<PhotoResponseDto> findAll(@QuerydslPredicate(root = Photo.class, bindings = PhotoRepository.class) Predicate predicate,
                                           Pageable pageable) {
         return photoService.findAll(predicate, pageable);
     }
 
-    @RequestMapping(value = "/findById", method = RequestMethod.GET)
-    public PhotoResponseDto findById(@RequestParam Long id) {
+    @GetMapping("/{id}")
+    public PhotoResponseDto findById(@PathVariable Long id) {
         return photoService.findById(id);
     }
 
-    @RequestMapping(value = "/save", method = RequestMethod.POST)
+    @PostMapping
     public PhotoResponseDto save(@RequestBody PhotoRequestDto photoRequestDto) {
         return photoService.save(photoRequestDto);
     }
 
-    @RequestMapping(value = "/update", method = RequestMethod.PUT)
-    public PhotoResponseDto update(@RequestBody PhotoRequestDto photoRequestDto) {
-        return photoService.update(photoRequestDto);
+    @PutMapping("/{id}")
+    public PhotoResponseDto update(@PathVariable Long id, @RequestBody PhotoRequestDto photoRequestDto) {
+        return photoService.update(id, photoRequestDto);
     }
 
-    @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
-    public boolean delete(@RequestParam Long id){
+    @DeleteMapping("/{id}")
+    public boolean delete(@PathVariable Long id){
         return photoService.delete(id);
     }
 

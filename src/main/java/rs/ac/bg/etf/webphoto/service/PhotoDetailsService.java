@@ -22,7 +22,7 @@ public interface PhotoDetailsService {
 
     List<PhotoDetails> saveAll(List<PhotoDetailsRequestDto> photoDetailsRequestDtos, Photo photo);
 
-    PhotoDetailsDto update(PhotoDetailsDto photoDetailsDto);
+    PhotoDetailsDto update(Long id, PhotoDetailsDto photoDetailsDto);
 
     List<PhotoDetails> updateAll(List<PhotoDetailsRequestDto> photoDetailsDtos, Photo photo);
 

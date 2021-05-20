@@ -20,5 +20,5 @@ public interface UserService {
 
     UserResponseDto save(UserRequestDto userRequestDto);
 
-    UserResponseDto update(UserRequestDto userRequestDto);
+    UserResponseDto update(Long id, UserRequestDto userRequestDto);
 }

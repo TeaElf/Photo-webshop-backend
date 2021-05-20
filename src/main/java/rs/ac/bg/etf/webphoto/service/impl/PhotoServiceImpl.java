@@ -73,8 +73,8 @@ public class PhotoServiceImpl implements PhotoService {
     }
 
     @Override
-    public PhotoResponseDto update(PhotoRequestDto photoRequestDto) {
-        Photo photo = photoRepository.findById(photoRequestDto.getId()).orElseThrow(ResourceNotFoundException::new);
+    public PhotoResponseDto update(Long id, PhotoRequestDto photoRequestDto) {
+        Photo photo = photoRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
         photo.setTitle(photoRequestDto.getTitle());
         photo.setDescription(photoRequestDto.getDescription());
         photo.setOrientation(photoRequestDto.getOrientation());

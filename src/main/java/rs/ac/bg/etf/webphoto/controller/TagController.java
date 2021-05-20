@@ -15,28 +15,28 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/tag")
+@RequestMapping(value = "/tags")
 public class TagController {
 
     private final TagService tagService;
 
-    @RequestMapping(value = "/findAll", method = RequestMethod.GET)
+    @GetMapping
     public Page<TagDto> findAll(@QuerydslPredicate(root = Tag.class, bindings = TagRepository.class) Predicate predicate,
                                 Pageable pageable) {
         return tagService.findAll(predicate, pageable);
     }
 
-    @RequestMapping(value = "/findById", method = RequestMethod.GET)
-    public TagDto findById(@RequestParam Long id) {
+    @GetMapping("/{id}")
+    public TagDto findById(@PathVariable Long id) {
         return tagService.findById(id);
     }
 
-    @RequestMapping(value = "/findOrCreate", method = RequestMethod.GET)
+    @GetMapping(value = "/findOrCreate")
     public List<Tag> findOrCreate(@RequestParam List<String> tags) {
         return tagService.findOrCreate(tags);
     }
 
-    @RequestMapping(value = "/save", method = RequestMethod.POST)
+    @PostMapping
     public TagDto save(@RequestBody TagDto tagDto) {
         return tagService.save(tagDto);
     }
@@ -46,9 +46,9 @@ public class TagController {
         return tagService.saveAll(tagDto);
     }
 
-    @RequestMapping(value = "/update", method = RequestMethod.PUT)
-    public TagDto update(@RequestBody TagDto tagDto) {
-        return tagService.update(tagDto);
+    @PutMapping("/{id}")
+    public TagDto update(@PathVariable Long id, @RequestBody TagDto tagDto) {
+        return tagService.update(id, tagDto);
     }
 
 }

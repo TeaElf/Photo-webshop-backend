@@ -64,8 +64,8 @@ public class PhotoDetailsServiceImpl implements PhotoDetailsService {
     }
 
     @Override
-    public PhotoDetailsDto update(PhotoDetailsDto photoDetailsDto) {
-        PhotoDetails photoDetails = findOne(photoDetailsDto.getId());
+    public PhotoDetailsDto update(Long id, PhotoDetailsDto photoDetailsDto) {
+        PhotoDetails photoDetails = findOne(id);
         photoDetails.setPath(photoDetailsDto.getPath());
         photoDetails.setPrice(photoDetailsDto.getPrice());
         photoDetails.setSize(photoDetailsDto.getSize());
