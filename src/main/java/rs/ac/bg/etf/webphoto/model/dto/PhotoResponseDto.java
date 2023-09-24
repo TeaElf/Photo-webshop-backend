@@ -17,10 +17,12 @@ public class PhotoResponseDto {
 
     private String orientation;
 
-    private CategoryDto category;
+    private CategoryDto category; // razmisliti da se vrati mozda samo string
 
     private List<PhotoDetailsDto> photoDetails;
 
     private List<TagDto> tags; // razmisliti da se vrati mozda samo string ali onda pretraga po naslovu
+
+    private Long userId;
 
 }

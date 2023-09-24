@@ -15,6 +15,7 @@ import rs.ac.bg.etf.webphoto.service.PhotoService;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/photos")
+@CrossOrigin
 public class PhotoController {
 
     private final PhotoService photoService;
@@ -41,7 +42,7 @@ public class PhotoController {
     }
 
     @DeleteMapping("/{id}")
-    public boolean delete(@PathVariable Long id){
+    public boolean delete(@PathVariable Long id) {
         return photoService.delete(id);
     }
 

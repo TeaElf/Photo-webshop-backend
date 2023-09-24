@@ -9,6 +9,7 @@ import rs.ac.bg.etf.webphoto.model.dto.PhotoResponseDto;
 @Mapper(componentModel = "spring")
 public interface PhotoMapper {
 
+    @Mapping(target = "userId", source = "user.id")
     PhotoResponseDto photoToPhotoResponseDto(Photo photo);
 
     @Mapping(target = "tags", ignore = true)
