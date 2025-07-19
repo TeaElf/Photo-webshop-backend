@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import rs.ac.bg.etf.webphoto.exceptions.specifications.ResourceNotFoundException;
 import rs.ac.bg.etf.webphoto.model.User;
@@ -52,6 +53,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserResponseDto findCurrentUser() {
+        String username= SecurityContextHolder.getContext().getAuthentication().getName();
+        return userMapper.userToUserResponseDto(findByUsername(username));
+    }
+
+    @Override
     public UserResponseDto save(UserRequestDto userRequestDto) {
         User user = userMapper.userRequestToUser(userRequestDto);
         user.setDateOfCreation(LocalDateTime.now());
@@ -68,8 +75,6 @@ public class UserServiceImpl implements UserService {
         user.setSurname(userRequestDto.getSurname());
         user.setEmail(userRequestDto.getEmail());
         user.setCountry(userRequestDto.getCountry());
-        user.setPassword(userRequestDto.getPassword());
-        user.setUsername(userRequestDto.getUsername());
         userRepository.save(user);
         return userMapper.userToUserResponseDto(user);
     }

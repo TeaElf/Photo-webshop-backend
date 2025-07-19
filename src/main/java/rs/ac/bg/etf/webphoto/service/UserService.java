@@ -18,6 +18,8 @@ public interface UserService {
 
     User findByUsername(String username);
 
+    UserResponseDto findCurrentUser();
+
     UserResponseDto save(UserRequestDto userRequestDto);
 
     UserResponseDto update(Long id, UserRequestDto userRequestDto);

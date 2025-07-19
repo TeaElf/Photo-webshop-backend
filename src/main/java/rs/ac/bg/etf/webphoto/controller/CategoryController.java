@@ -34,7 +34,6 @@ public class CategoryController {
         return categoryService.save(categoryDto);
     }
 
-//    @RequestMapping(value = "/update", method = RequestMethod.PUT)
     @PutMapping("/{id}")
     public CategoryDto update(@PathVariable Long id, @RequestBody CategoryDto categoryDto) {
         return categoryService.update(id, categoryDto);
