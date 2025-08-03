@@ -47,6 +47,12 @@ public class PhotoServiceImpl implements PhotoService {
     }
 
     @Override
+    public List<PhotoResponseDto> findByIds(List<Long> ids) {
+        List<Photo> photos = photoRepository.findByIdIn(ids);
+        return photos.stream().map(pd-> photoMapper.photoToPhotoResponseDto(pd)).collect(Collectors.toList());
+    }
+
+    @Override
     public PhotoResponseDto save(PhotoRequestDto photoRequestDto) {
         Photo photo = photoMapper.photoRequestDtoToPhoto(photoRequestDto);
         photo.setDateOfCreation(LocalDateTime.now());

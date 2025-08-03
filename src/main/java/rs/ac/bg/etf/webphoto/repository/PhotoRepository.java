@@ -12,9 +12,12 @@ import rs.ac.bg.etf.webphoto.model.Photo;
 import rs.ac.bg.etf.webphoto.model.QPhoto;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 public interface PhotoRepository extends JpaRepository<Photo, Long>, QuerydslPredicateExecutor<Photo>, QuerydslBinderCustomizer<QPhoto> {
+
+    List<Photo> findByIdIn(List<Long> ids);
 
     @Override
     default void customize(QuerydslBindings bindings, QPhoto root) {

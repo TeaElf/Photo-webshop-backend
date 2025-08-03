@@ -12,6 +12,8 @@ import rs.ac.bg.etf.webphoto.model.dto.PhotoResponseDto;
 import rs.ac.bg.etf.webphoto.repository.PhotoRepository;
 import rs.ac.bg.etf.webphoto.service.PhotoService;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/photos")
@@ -29,6 +31,11 @@ public class PhotoController {
     @GetMapping("/{id}")
     public PhotoResponseDto findById(@PathVariable Long id) {
         return photoService.findById(id);
+    }
+
+    @GetMapping("/findByIds")
+    public List<PhotoResponseDto> findByIds(@RequestParam List<Long> ids) {
+        return photoService.findByIds(ids);
     }
 
     @PostMapping
